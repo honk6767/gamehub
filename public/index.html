@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GameHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #1a0033, #050008);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px;
+      background: rgba(8, 0, 25, 0.9);
+      border-radius: 18px;
+      box-shadow:
+        0 0 25px rgba(180, 0, 255, 0.6),
+        0 0 60px rgba(90, 0, 255, 0.4);
+      text-align: center;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+      text-shadow:
+        0 0 10px #ff00ff,
+        0 0 25px #8a00ff;
+    }
+
+    .tagline {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 28px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: #0e0022;
+      color: #ffffff;
+      font-size: 14px;
+      box-shadow: inset 0 0 10px rgba(120, 0, 255, 0.6);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .signin {
+      background: linear-gradient(135deg, #7f00ff, #ff00ff);
+      color: white;
+      box-shadow: 0 0 15px #ff00ff;
+    }
+
+    .signin:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px #ff00ff;
+    }
+
+    .guest {
+      background: linear-gradient(135deg, #0044ff, #00c3ff);
+      color: white;
+      box-shadow: 0 0 15px #00c3ff;
+    }
+
+    .guest:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px #00c3ff;
+    }
+
+    .info {
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 11px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="title">GAMEHUB</div>
+    <div class="tagline">Play • Create • Compete</div>
+
+    <input id="username" type="text" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="signin" onclick="signIn()">Sign In</button>
+    <button class="guest" onclick="continueGuest()">Continue as Guest</button>
+
+    <div class="info">
+      Guest progress is temporary. Sign in to save XP and unlocks.
+    </div>
+
+    <div class="footer">
+      © GameHub
+    </div>
+  </div>
+
+  <script>
+    function signIn() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        alert("Please enter a username and password.");
+        return;
+      }
+
+      const userData = {
+        username: username,
+        signedIn: true,
+        xp: 0,
+        unlockedGames: [1],
+        settings: {
+          theme: "neon"
+        }
+      };
+
+      localStorage.setItem("gamehub_user", JSON.stringify(userData));
+      window.location.href = "game.html";
+    }
+
+    function continueGuest() {
+      const guestData = {
+        guest: true,
+        xp: 0,
+        unlockedGames: [1],
+        settings: {
+          theme: "neon"
+        }
+      };
+
+      sessionStorage.setItem("gamehub_guest", JSON.stringify(guestData));
+      window.location.href = "game.html";
+    }
+  </script>
+</body>
+</html>

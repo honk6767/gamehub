@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GameHub • Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="chat-header">
+    <h1 id="gameTitle">Loading…</h1>
+    <button onclick="location.href='games.html'">⬅ Exit</button>
+  </header>
+
+  <main style="padding:20px; max-width:800px; margin:auto;">
+    <p id="gameDescription"></p>
+
+    <div id="gameArea" style="margin-top:30px; text-align:center;">
+      <!-- GAME CONTENT INJECTED HERE -->
+    </div>
+
+    <div style="margin-top:30px; text-align:center;">
+      <button onclick="complete()">Finish Game</button>
+    </div>
+  </main>
+
+  <script src="engine.js"></script>
+
+  <script>
+    /* =============================
+       LOAD GAME
+       ============================= */
+    const game = loadCurrentGame();
+
+    if (!game) {
+      location.href = "404.html";
+    }
+
+    document.getElementById("gameTitle").textContent = game.name;
+    document.getElementById("gameDescription").textContent = game.description || "";
+
+    const area = document.getElementById("gameArea");
+
+    /* =============================
+       GAME TYPES
+       ============================= */
+
+    if (game.type === "click") {
+      let count = 0;
+      const btn = document.createElement("button");
+      btn.textContent = "Click Me";
+      btn.onclick = () => {
+        count++;
+        btn.textContent = "Clicks: " + count;
+      };
+      area.appendChild(btn);
+    }
+
+    else if (game.type === "timer") {
+      let time = game.time || 10;
+      const label = document.createElement("h2");
+      label.textContent = time;
+      area.appendChild(label);
+
+      const interval = setInterval(() => {
+        time--;
+        label.textContent = time;
+        if (time <= 0) {
+          clearInterval(interval);
+          label.textContent = "Done!";
+        }
+      }, 1000);
+    }
+
+    else if (game.type === "reaction") {
+      const label = document.createElement("h2");
+      label.textContent = "Wait…";
+      area.appendChild(label);
+
+      setTimeout(() => {
+        label.textContent = "CLICK!";
+        const start = Date.now();
+
+        area.onclick = () => {
+          const reaction = Date.now() - start;
+          label.textContent = "Reaction: " + reaction + "ms";
+        };
+      }, Math.random() * 3000 + 1000);
+    }
+
+    else {
+      const fallback = document.createElement("p");
+      fallback.textContent = "This game mode is loading.";
+      area.appendChild(fallback);
+    }
+
+    /* =============================
+       COMPLETE GAME
+       ============================= */
+    function complete() {
+      completeGame(game.xpReward || 10);
+      alert("Game complete! XP earned.");
+      location.href = "games.html";
+    }
+  </script>
+
+</body>
+</html>

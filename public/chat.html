@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GameHub • Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="chat-page">
+
+  <header class="chat-header">
+    <h1>💬 GameHub Chat</h1>
+    <button onclick="location.href='games.html'">⬅ Back</button>
+  </header>
+
+  <main class="chat-box" id="messages"></main>
+
+  <footer class="chat-input">
+    <input id="messageInput" placeholder="Type message… (no speed limits here)" />
+    <button onclick="sendMessage()">Send</button>
+  </footer>
+
+  <script>
+    /* ============================
+       🔥 FIREBASE CONFIG (FIXED)
+       ============================ */
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const chatRef = db.ref("chat");
+
+    let currentUser = "Guest";
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUser = user.email || "Driver_" + Math.floor(Math.random() * 9999);
+      }
+    });
+
+    /* ============================
+       🏎️ CAR JOKES (CHAT ONLY)
+       ============================ */
+    const carJokes = [
+      "I don’t speed — I just test acceleration.",
+      "This chat has more horsepower than my laptop fan.",
+      "Life is short. Downshift aggressively.",
+      "If bugs were potholes, this chat would be freshly paved.",
+      "I tried to brake my code, but it just drifted.",
+      "This message was delivered faster than a green light launch.",
+      "Turbocharged conversations only.",
+      "My car understands me better than JavaScript errors.",
+      "This chat runs smoother than a freshly tuned engine.",
+      "I don’t lag — I coast.",
+      "That feeling when your code starts on the first try… like a cold start win.",
+      "Chat so fast it needs traction control.",
+      "No speed limits, just vibes.",
+      "If this chat was a car, it’d definitely have launch control."
+    ];
+
+    function randomCarJoke() {
+      return carJokes[Math.floor(Math.random() * carJokes.length)];
+    }
+
+    /* ============================
+       💬 CHAT LOGIC
+       ============================ */
+    function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      chatRef.push({
+        user: currentUser,
+        text: text,
+        time: Date.now()
+      });
+
+      // 35% chance of CarBot joke
+      if (Math.random() < 0.35) {
+        chatRef.push({
+          user: "🏎️ CarBot",
+          text: randomCarJoke(),
+          time: Date.now() + 1
+        });
+      }
+
+      input.value = "";
+    }
+
+    chatRef.limitToLast(150).on("child_added", snap => {
+      const msg = snap.val();
+      const div = document.createElement("div");
+      div.className = "chat-message";
+
+      div.innerHTML = `
+        <span class="chat-user">${msg.user}</span>
+        <span class="chat-text">${msg.text}</span>
+      `;
+
+      document.getElementById("messages").appendChild(div);
+      div.scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GameHub • Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="auth-page">
+
+  <div class="auth-box">
+    <h1>🚀 Create Account</h1>
+    <p>Join GameHub and save progress</p>
+
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+
+    <button onclick="emailSignup()">Sign Up</button>
+
+    <div class="divider">OR</div>
+
+    <button class="google" onclick="googleSignup()">Sign up with Google</button>
+
+    <p class="switch">
+      Already have an account?
+      <a href="index.html">Sign in</a>
+    </p>
+  </div>
+
+  <script>
+    // Firebase config (same as app.js)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function emailSignup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "games.html";
+        })
+        .catch(err => alert(err.message));
+    }
+
+    function googleSignup() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => {
+          window.location.href = "games.html";
+        })
+        .catch(err => alert(err.message));
+    }
+  </script>
+
+</body>
+</html>
